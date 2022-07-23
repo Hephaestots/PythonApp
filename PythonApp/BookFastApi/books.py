@@ -1,4 +1,3 @@
-from http.client import HTTPResponse
 from typing import Optional
 from fastapi import FastAPI, HTTPException
 
