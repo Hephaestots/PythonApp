@@ -1,5 +1,6 @@
 from typing import Optional
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, status
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
@@ -43,7 +44,7 @@ async def create_book(book_title: str, book_author: str) -> str:
     book_id = len(BOOKS) + 1
     book = {'title': book_title, 'author': book_author}
     BOOKS[book_id] = book
-    return book
+    return JSONResponse(status_code=202, content=book)
 
 # Basic PUT
 @app.put("/books/{book_id}")
@@ -53,22 +54,24 @@ async def update_book(book_id: int, book_title: str, book_author: str) -> str:
     book['title'] = book_title
     book['author'] = book_author
     BOOKS[book_id] = book
-    return book
+    return JSONResponse(status_code=202, content=book)
 
 # Basic DELETE
 @app.delete("/books/{book_id}")
 async def delete_book(book_id: int) -> str:
     validate_book_id(book_id)
+    book = BOOKS.get(book_id)
     del BOOKS[book_id]
-    return f"Book #{book_id} has been deleted."
+    return JSONResponse(status_code=202, content=book)
 
 @app.delete("/books/")
 async def delete_book(book_id: int) -> str:
     validate_book_id(book_id)
+    book = BOOKS.get(book_id)
     del BOOKS[book_id]
-    return f"Book #{book_id} has been deleted."
+    return JSONResponse(status_code=202, content=book)
 
-# Private Helper Method
+# Helper Method
 def validate_book_id(book_id: int) -> None:
     if (book_id > len(BOOKS) or book_id <= 0):
         raise HTTPException(status_code=401, detail="Invalid Book Id")
