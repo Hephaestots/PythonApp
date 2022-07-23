@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 
 app = FastAPI()
