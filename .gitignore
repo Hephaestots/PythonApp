@@ -1,8 +1,8 @@
 # Visual Studio
 .vs
-bookfastapienv/
 
 # Byte-compiled / optimized / DLL files
+bookfastapienv/
 __pycache__/
 *.py[cod]
 *$py.class
