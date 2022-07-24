@@ -2,7 +2,7 @@
 .vs
 
 # Byte-compiled / optimized / DLL files
-PythonApp/BookFastApi/bookfastapienv/
+PythonApp/FastApi/fastapienv/
 __pycache__/
 *.py[cod]
 *$py.class
