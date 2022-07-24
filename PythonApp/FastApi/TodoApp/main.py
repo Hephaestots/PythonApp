@@ -1,12 +1,12 @@
 from database import alchemy_engine, SessionLocal
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI
 from sqlalchemy import exc
 from sqlalchemy.orm import Session
 from typing import Dict
 
 # Custom Modules
 from dto import Todo
-from exceptions import http_exception, sqlalchemy_exception
+from exceptions import http_not_found_exception, sqlalchemy_exception
 from responses import successful_response
 import models
 
@@ -37,7 +37,7 @@ async def read_todo(todo_id: int, db: Session = Depends(get_db)) -> models.Todos
 
     if todo:
         return todo
-    http_exception()
+    raise http_not_found_exception("Todo")
 
 
 @app.post("/")
@@ -63,7 +63,7 @@ async def update_todo(todo_id: int, todo: Todo, db: Session = Depends(get_db)) -
         .first()
 
     if not old_todo:
-        raise http_exception()
+        raise http_not_found_exception("Todo")
 
     old_todo.title = todo.title
     old_todo.description = todo.description
@@ -85,7 +85,7 @@ async def delete_todo(todo_id: int, db: Session = Depends(get_db)) -> dict[str, 
         .first()
 
     if not old_todo:
-        raise http_exception()
+        raise http_not_found_exception("Todo")
 
     try:
         db.query(models.Todos)\
