@@ -6,8 +6,7 @@ from typing import Optional
 
 class Book(BaseModel):
     id: UUID
-    title: str = Field(min_length=1,
-                       max_length=20)
+    title: str = Field(min_length=1)
     description: Optional[str] = Field(title="Description of book.",
                                        min_length=1,
                                        max_length=250)
@@ -45,22 +44,45 @@ async def read_all_books(books_to_return: Optional[int] = None) -> list[Book]:
             new_books.append(BOOKS[i - 1])
             i += 1
         return new_books
-
     return BOOKS
 
 
 @app.get("/books/{book_id}")
 async def read_book(book_id: UUID) -> Book:
-    books = [book for book in BOOKS if book.id == book_id]
-    if books:
-        return books.pop(0)
-    raise HTTPException(status_code=401, detail="This book doesn't exist.")
+    matched_books = [book for book in BOOKS if book.id == book_id]
+    if not matched_books:
+        raise HTTPException(status_code=401, detail="This book doesn't exist.")
+    return matched_books.pop(0)
 
 
 @app.post("/")
 async def create_book(book: Book) -> Book:
     BOOKS.append(book)
     return book
+
+
+@app.put("/books/{book_id}")
+async def update_book(book_id: UUID, book: Book) -> Book:
+    matched_books = [book for book in BOOKS if book.id == book_id]
+    if not matched_books:
+        raise HTTPException(status_code=401, detail="This book doesn't exist.")
+
+    index = BOOKS.index(matched_books.pop(0))
+    book.id = book_id
+    BOOKS[index] = book
+    return book
+
+
+@app.delete("/books/{book_id}")
+async def delete_book(book_id: UUID) -> str:
+    matched_books = [book for book in BOOKS if book.id == book_id]
+    if not matched_books:
+        raise HTTPException(status_code=401, detail="This book doesn't exist.")
+
+    match = matched_books.pop(0)
+    index = BOOKS.index(match)
+    del BOOKS[index]
+    return f"Book {book_id} has been deleted."
 
 
 # Helper methods
