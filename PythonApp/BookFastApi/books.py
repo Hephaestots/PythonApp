@@ -45,7 +45,7 @@ async def read_book(book_id: int) -> dict[str, str]:
 
 # Basic POST
 @app.post("/")
-async def create_book(book_title: str, book_author: str) -> str:
+async def create_book(book_title: str, book_author: str) -> JSONResponse:
     book_id = len(BOOKS) + 1
     book = {'title': book_title, 'author': book_author}
     BOOKS[book_id] = book
@@ -54,7 +54,7 @@ async def create_book(book_title: str, book_author: str) -> str:
 
 # Basic PUT
 @app.put("/books/{book_id}")
-async def update_book(book_id: int, book_title: str, book_author: str) -> str:
+async def update_book(book_id: int, book_title: str, book_author: str) -> JSONResponse:
     validate_book_id(book_id)
     book = BOOKS.get(book_id)
     book['title'] = book_title
@@ -65,7 +65,7 @@ async def update_book(book_id: int, book_title: str, book_author: str) -> str:
 
 # Basic DELETE
 @app.delete("/books/{book_id}")
-async def delete_book(book_id: int) -> str:
+async def delete_book(book_id: int) -> JSONResponse:
     validate_book_id(book_id)
     book = BOOKS.get(book_id)
     del BOOKS[book_id]
@@ -73,7 +73,7 @@ async def delete_book(book_id: int) -> str:
 
 
 @app.delete("/books/")
-async def delete_book(book_id: int) -> str:
+async def delete_book(book_id: int) -> JSONResponse:
     validate_book_id(book_id)
     book = BOOKS.get(book_id)
     del BOOKS[book_id]
